@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم د/ خالد 🩺</title>
+    <style>
+        /* تنسيق الصفحة */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; padding: 20px; }
+        .container { max-width: 600px; margin: 50px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        textarea { height: 150px; resize: vertical; }
+        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="adminPanel" style="display: none;">
+        <h2>👋 أهلاً دكتور خالد</h2>
+        <p>اكتب البيانات هنا عشان تظهر في الموقع:</p>
+        
+        <input type="text" id="docTitle" placeholder="عنوان المقال / اسم الدواء">
+        <textarea id="docContent" placeholder="اكتب التفاصيل هنا..."></textarea>
+        
+        <button id="sendBtn">نشر في الموقع 🚀</button>
+    </div>
+
+    <script type="module">
+        // 1. استدعاء أدوات فايربيس
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // 2. إعدادات مشروعك (تمت إضافتها هنا) ✅
+        const firebaseConfig = {
+          apiKey: "AIzaSyB7cYrnnhx_eBsV3IvhAJsM0kzK_I-zpUM",
+          authDomain: "sheffa-pro.firebaseapp.com",
+          projectId: "sheffa-pro",
+          storageBucket: "sheffa-pro.firebasestorage.app",
+          messagingSenderId: "542669946824",
+          appId: "1:542669946824:web:f6c0826ee500344f278afd",
+          measurementId: "G-XSQ9Q08JLQ"
+        };
+
+        // تشغيل فايربيس
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 3. نظام الحماية البسيط (الباسورد)
+        const password = prompt("🔐 لو سمحت أدخل كلمة مرور الأدمن:");
+        if (password === "01015734090") { 
+            // الباسورد هو 123456 تقدر تغيره من السطر اللي فوق
+            document.getElementById('adminPanel').style.display = "block"; 
+        } else {
+            alert("❌ كلمة المرور خاطئة!");
+            window.location.href = "index.html"; 
+        }
+
+        // 4. عند الضغط على زر "نشر"
+        document.getElementById('sendBtn').addEventListener('click', async () => {
+            const title = document.getElementById('docTitle').value;
+            const content = document.getElementById('docContent').value;
+
+            if (title === "" || content === "") {
+                alert("⚠️ من فضلك اكتب العنوان والتفاصيل");
+                return;
+            }
+
+            try {
+                // إرسال البيانات لقاعدة البيانات في مجلد اسمه "posts"
+                await addDoc(collection(db, "posts"), {
+                    title: title,
+                    body: content,
+                    date: new Date().toISOString()
+                });
+                
+                alert("✅ تم النشر بنجاح يا دكتور!");
+                // تفريغ الخانات
+                document.getElementById('docTitle').value = "";
+                document.getElementById('docContent').value = "";
+                
+            } catch (e) {
+                console.error("Error: ", e);
+                alert("❌ حصلت مشكلة: " + e.message);
+            }
+        });
+    </script>
+</body>
+</html>
