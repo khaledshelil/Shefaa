@@ -1865,6 +1865,114 @@ const firebaseConfig = {
         </div>
 
 </section>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc, increment, setDoc, collection, addDoc, query, where, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyB7cYrnnhx_eBsV3IvhAJsM0kzK_I-zpUM",
+        authDomain: "sheffa-pro.firebaseapp.com",
+        projectId: "sheffa-pro",
+        storageBucket: "sheffa-pro.firebasestorage.app",
+        messagingSenderId: "542669946824",
+        appId: "1:542669946824:web:f6c0826ee500344f278afd",
+        measurementId: "G-XSQ9Q08JLQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const dbFire = getFirestore(app); // سميناها dbFire عشان ميتلخبطش مع db القديمة
+
+    // 1. زيادة عداد الزوار + تحديث الشريط المتحرك
+    async function initSite() {
+        const settingsRef = doc(dbFire, "settings", "general");
+        
+        try {
+            // زيادة العداد
+            await updateDoc(settingsRef, { visitors: increment(1) });
+            
+            // قراءة شريط الأخبار
+            const snap = await getDoc(settingsRef);
+            if (snap.exists() && snap.data().ticker) {
+                // تحديث نص الشريط في الموقع
+                const tickerEl = document.querySelector('.ticker');
+                if(tickerEl) tickerEl.innerHTML = snap.data().ticker;
+            }
+        } catch (e) {
+            // لو الملف مش موجود أول مرة، بنعمله
+            await setDoc(settingsRef, { visitors: 1, ticker: "أهلاً بكم في موقع شفاء" }, { merge: true });
+        }
+    }
+    initSite();
+
+    // 2. دمج الأدوية الجديدة من الأدمن
+    async function loadDynamicDrugs() {
+        const q = collection(dbFire, "drugs");
+        const snap = await getDocs(q);
+        snap.forEach(doc => {
+            const data = doc.data();
+            // إضافة الدواء الجديد للمصفوفة db الموجودة في الموقع
+            // بنحطله قيم افتراضية لو مش موجودة
+            db.push({
+                n: data.n,
+                p: data.p || 0,
+                c: "عام",
+                a: data.a || "",
+                u: data.u || "راجع الطبيب",
+                dose: data.dose || "حسب الطبيب",
+                eff: "-",
+                con: "-",
+                tip: "تمت إضافته حديثاً",
+                preg: data.preg || "C"
+            });
+        });
+        // إعادة رسم القائمة بالأدوية الجديدة
+        // (ملاحظة: تأكد إن دالة render موجودة عندك في الكود الأصلي)
+        if(typeof render === 'function') render(db);
+    }
+    loadDynamicDrugs();
+
+    // 3. تعديل نظام التعليقات (إرسال للمراجعة)
+    const sendBtn = document.getElementById('send-btn');
+    if(sendBtn) {
+        // بنلغي القديم ونعمل جديد
+        const newBtn = sendBtn.cloneNode(true);
+        sendBtn.parentNode.replaceChild(newBtn, sendBtn);
+        
+        newBtn.addEventListener('click', async () => {
+            const name = document.getElementById('username').value;
+            const comment = document.getElementById('user-comment').value;
+
+            if (name && comment) {
+                await addDoc(collection(dbFire, "comments"), {
+                    name: name,
+                    text: comment,
+                    time: new Date(),
+                    status: "pending" // أهم سطر: حالته "انتظار"
+                });
+                alert("تم إرسال تعليقك! سيظهر بعد موافقة الإدارة ✅");
+                document.getElementById('user-comment').value = "";
+            } else {
+                alert("اكتب الاسم والتعليق");
+            }
+        });
+    }
+
+    // 4. عرض التعليقات (فقط الموافق عليها)
+    const commentsBox = document.getElementById("comments-box");
+    if(commentsBox) {
+        const q = query(collection(dbFire, "comments"), where("status", "==", "approved")); // شرط: الحالة approved
+        onSnapshot(q, (snap) => {
+            commentsBox.innerHTML = "<h3>💬 آراء الزوار:</h3>";
+            snap.forEach(d => {
+                const data = d.data();
+                commentsBox.innerHTML += `
+                <div style="background:#f9f9f9; padding:10px; margin-bottom:10px; border-radius:10px;">
+                    <strong style="color:var(--main)">${data.name}</strong>: ${data.text}
+                </div>`;
+            });
+        });
+    }
+</script>
 
 </body>
 </html>
