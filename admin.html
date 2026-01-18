@@ -3,112 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم المركزية | Shefaa Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>لوحة القيادة | Shefaa Admin Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --main: #0d47a1; --bg: #f4f6f9; }
-        body { font-family: 'Cairo'; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        :root {
+            --primary: #0d47a1; --secondary: #1565c0; --bg: #f3f4f6; --white: #ffffff;
+            --danger: #ef4444; --success: #10b981; --text: #1f2937;
+        }
+        
+        * { box-sizing: border-box; outline: none; user-select: none; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; height: 100vh; display: flex; overflow: hidden; }
+
+        /* --- 1. شاشة القفل (Login) --- */
+        #loginScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #000428, #004e92);
+            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.5s;
+        }
+        .login-card {
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 40px;
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); text-align: center; width: 320px;
+        }
+        .login-card input {
+            width: 100%; padding: 12px; margin: 20px 0; border-radius: 10px; border: none;
+            text-align: center; font-family: 'Tajawal'; font-size: 1.1em;
+        }
+        .login-btn {
+            background: var(--white); color: var(--primary); padding: 10px 40px; border-radius: 30px;
+            border: none; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%;
+        }
+        .login-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,255,255,0.5); }
+
+        /* --- 2. التصميم الرئيسي (Dashboard) --- */
+        #app { display: none; width: 100%; height: 100%; }
         
         /* Sidebar */
-        .sidebar { width: 250px; background: white; padding: 20px; box-shadow: -2px 0 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .brand { color: var(--main); font-size: 1.5em; font-weight: bold; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
-        .menu-item { padding: 15px; cursor: pointer; border-radius: 10px; color: #555; font-weight: 600; margin-bottom: 5px; transition: 0.3s; }
-        .menu-item:hover, .menu-item.active { background: #e3f2fd; color: var(--main); }
-        .menu-item i { margin-left: 10px; width: 20px; }
+        aside {
+            width: 260px; background: var(--white); padding: 20px; display: flex; flex-direction: column;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.05); z-index: 10;
+        }
+        .brand {
+            color: var(--primary); font-size: 1.8em; font-weight: 900; margin-bottom: 40px;
+            display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--bg); padding-bottom: 20px;
+        }
+        .nav-item {
+            padding: 15px; margin-bottom: 10px; border-radius: 12px; color: #6b7280; cursor: pointer;
+            font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 15px;
+        }
+        .nav-item:hover, .nav-item.active { background: #e0f2fe; color: var(--primary); }
+        .nav-item i { width: 25px; font-size: 1.2em; }
 
-        /* Content */
-        .content { flex: 1; padding: 30px; overflow-y: auto; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .card h3 { margin-top: 0; color: var(--main); border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
-
-        /* Stats */
-        .stats-box { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .stat { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .stat h2 { margin: 10px 0 0; font-size: 2.5em; color: var(--main); }
-
-        /* Inputs */
-        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; font-family: 'Cairo'; }
-        button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Cairo'; }
-        .btn-save { background: var(--main); color: white; width: 100%; }
-        .btn-approve { background: #27ae60; color: white; margin-left: 5px; }
-        .btn-del { background: #c0392b; color: white; }
-
-        /* Sections */
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+        /* Main Content */
+        main { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
         
-        /* Comment Box */
-        .comment-item { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .pending { border-right: 4px solid orange; background: #fff8e1; }
-        .approved { border-right: 4px solid green; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-title { font-size: 1.8em; font-weight: bold; }
+        .admin-badge { background: #dbeafe; color: var(--primary); padding: 5px 15px; border-radius: 20px; font-size: 0.9em; font-weight: bold; }
+
+        /* Cards & Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--white); padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 20px; }
+        .icon-box { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8em; color: white; }
+        .bg-blue { background: #3b82f6; } .bg-green { background: #10b981; } .bg-purple { background: #8b5cf6; }
+
+        /* Forms & Inputs */
+        .card { background: var(--white); border-radius: 15px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); animation: fadeIn 0.4s; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        label { display: block; margin-bottom: 8px; color: #374151; font-weight: bold; font-size: 0.9em; }
+        input, select, textarea {
+            width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px;
+            font-family: 'Tajawal'; margin-bottom: 15px; transition: 0.3s;
+        }
+        input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1); }
+        .full-width { grid-column: span 2; }
+        
+        .btn { padding: 12px 25px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; transition: 0.3s; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; font-size: 1.1em; }
+        .btn-primary:hover { background: var(--secondary); }
+        .btn-danger { background: #fee2e2; color: var(--danger); padding: 5px 10px; border-radius: 6px; }
+        .btn-danger:hover { background: var(--danger); color: white; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: right; color: #6b7280; padding: 15px; border-bottom: 1px solid #e5e7eb; font-size: 0.9em; }
+        td { padding: 15px; border-bottom: 1px solid #f3f4f6; font-size: 0.95em; }
+        tr:hover { background: #f9fafb; }
+
+        /* Tabs Logic */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Mobile */
+        @media (max-width: 768px) {
+            aside { position: fixed; left: -260px; height: 100%; transition: 0.3s; }
+            aside.open { left: 0; }
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="brand"><i class="fas fa-user-md"></i> لوحة التحكم</div>
-        <div class="menu-item active" onclick="nav('dashboard')"><i class="fas fa-chart-line"></i> الإحصائيات</div>
-        <div class="menu-item" onclick="nav('website-control')"><i class="fas fa-sliders-h"></i> التحكم بالموقع</div>
-        <div class="menu-item" onclick="nav('add-drug')"><i class="fas fa-pills"></i> إضافة دواء</div>
-        <div class="menu-item" onclick="nav('comments-manage')"><i class="fas fa-comments"></i> إدارة التعليقات</div>
-        <div class="menu-item" style="margin-top: auto; color: red;" onclick="location.href='index.html'"><i class="fas fa-sign-out-alt"></i> خروج</div>
+    <div id="loginScreen">
+        <div class="login-card">
+            <i class="fas fa-user-shield fa-4x" style="color:white; margin-bottom:20px;"></i>
+            <h2 style="color:white; margin:0 0 10px 0;">د. خالد | Admin</h2>
+            <p style="color:#e0f2fe; font-size:0.9em;">أدخل كود المرور للتحكم في النظام</p>
+            <input type="password" id="passwordInput" placeholder="******">
+            <button class="login-btn" onclick="checkAuth()">دخول النظام 🚀</button>
+        </div>
     </div>
 
-    <div class="content">
-        
-        <div id="dashboard" class="section active">
-            <div class="stats-box">
-                <div class="stat">
-                    <i class="fas fa-eye fa-2x" style="color:#00bcd4"></i>
-                    <h2 id="viewCount">0</h2>
-                    <p>زيارات الموقع</p>
+    <div id="app">
+        <aside>
+            <div class="brand"><i class="fas fa-heartbeat"></i> Shefaa Pro</div>
+            
+            <div class="nav-item active" onclick="switchTab('dashboard', this)">
+                <i class="fas fa-th-large"></i> نظرة عامة
+            </div>
+            <div class="nav-item" onclick="switchTab('addDrug', this)">
+                <i class="fas fa-plus-circle"></i> إضافة دواء
+            </div>
+            <div class="nav-item" onclick="switchTab('manageDrugs', this)">
+                <i class="fas fa-capsules"></i> إدارة المخزون
+            </div>
+            <div class="nav-item" onclick="switchTab('settings', this)">
+                <i class="fas fa-sliders-h"></i> إعدادات الموقع
+            </div>
+            
+            <div style="flex:1"></div>
+            <div class="nav-item" style="color:#ef4444;" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> تسجيل خروج
+            </div>
+        </aside>
+
+        <main>
+            <header>
+                <div class="page-title" id="pageTitle">نظرة عامة</div>
+                <div class="admin-badge">Dr. Khaled (Online) ●</div>
+            </header>
+
+            <div id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="icon-box bg-blue"><i class="fas fa-pills"></i></div>
+                        <div>
+                            <h3 style="margin:0" id="statDrugs">0</h3>
+                            <span style="color:#6b7280">إجمالي الأدوية</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon-box bg-green"><i class="fas fa-users"></i></div>
+                        <div>
+                            <h3 style="margin:0" id="statViews">Loading...</h3>
+                            <span style="color:#6b7280">عدد الزوار</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon-box bg-purple"><i class="fas fa-comments"></i></div>
+                        <div>
+                            <h3 style="margin:0" id="statComments">0</h3>
+                            <span style="color:#6b7280">رسائل جديدة</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat">
-                    <i class="fas fa-database fa-2x" style="color:#9c27b0"></i>
-                    <h2 id="drugsCount">100+</h2>
-                    <p>الأدوية المسجلة</p>
+                
+                <div class="card">
+                    <h3>📢 تحديث سريع لشريط الأخبار</h3>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="quickTicker" placeholder="اكتب الخبر العاجل هنا..." style="margin:0;">
+                        <button class="btn btn-primary" style="width:auto;" onclick="updateTicker()">نشر</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="website-control" class="section">
-            <div class="card">
-                <h3>📢 شريط الأخبار المتحرك</h3>
-                <p>اكتب النص الذي تريد أن يظهر في الشريط العلوي للموقع:</p>
-                <textarea id="tickerText" rows="3"></textarea>
-                <button class="btn-save" onclick="saveTicker()">تحديث الشريط فوراً 🚀</button>
-            </div>
-        </div>
+            <div id="addDrug" class="tab-content">
+                <div class="card">
+                    <h3 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:15px; margin-bottom:20px;">
+                        <i class="fas fa-file-medical"></i> بيانات الدواء الجديد
+                    </h3>
+                    
+                    <div class="form-grid">
+                        <div>
+                            <label>اسم الدواء (Trade Name)</label>
+                            <input id="dN" placeholder="مثال: Panadol Extra">
+                        </div>
+                        <div>
+                            <label>السعر (EGP)</label>
+                            <input id="dP" type="number" placeholder="مثال: 45">
+                        </div>
+                        
+                        <div>
+                            <label>المادة الفعالة (Active Ingredient)</label>
+                            <input id="dA" placeholder="مثال: Paracetamol">
+                        </div>
+                        <div>
+                            <label>تصنيف الدواء</label>
+                            <select id="dCat">
+                                <option value="مسكن">مسكنات</option>
+                                <option value="مضاد">مضاد حيوي</option>
+                                <option value="معدة">معدة وقولون</option>
+                                <option value="ضغط">ضغط وقلب</option>
+                                <option value="سكر">سكر</option>
+                                <option value="برد">برد وحساسية</option>
+                                <option value="اطفال">أطفال</option>
+                                <option value="جلدية">جلدية</option>
+                                <option value="مكمل">فيتامينات</option>
+                                <option value="نفسية">نفسية وعصبية</option>
+                                <option value="عين">عيون</option>
+                            </select>
+                        </div>
 
-        <div id="add-drug" class="section">
-            <div class="card">
-                <h3>💊 إضافة دواء جديد</h3>
-                <input id="dN" placeholder="اسم الدواء">
-                <input id="dP" placeholder="السعر" type="number">
-                <input id="dA" placeholder="المادة الفعالة">
-                <input id="dU" placeholder="دواعي الاستعمال">
-                <button class="btn-save" onclick="addNewDrug()">نشر الدواء</button>
-            </div>
-        </div>
+                        <div class="full-width">
+                            <label>دواعي الاستعمال (بالتفصيل)</label>
+                            <textarea id="dU" rows="2" placeholder="اكتب هنا استخدامات الدواء..."></textarea>
+                        </div>
 
-        <div id="comments-manage" class="section">
-            <div class="card">
-                <h3>⏳ تعليقات في الانتظار (تحتاج موافقة)</h3>
-                <div id="pendingList">لا يوجد تعليقات جديدة</div>
-            </div>
-            <div class="card">
-                <h3>✅ تعليقات منشورة</h3>
-                <div id="approvedList"></div>
-            </div>
-        </div>
+                        <div class="full-width">
+                            <label>الجرعة المقترحة</label>
+                            <input id="dDose" placeholder="مثال: قرص كل 8 ساعات بعد الأكل">
+                        </div>
 
+                        <div>
+                            <label>الآثار الجانبية (Side Effects)</label>
+                            <input id="dEff" placeholder="مثال: دوخة، غثيان...">
+                        </div>
+                        <div>
+                            <label>موانع الاستخدام (Contraindications)</label>
+                            <input id="dCon" placeholder="مثال: قرحة المعدة...">
+                        </div>
+
+                        <div>
+                            <label>فئة الحمل (Pregnancy Safety)</label>
+                            <select id="dPreg">
+                                <option value="A">A (آمن تماماً)</option>
+                                <option value="B">B (آمن غالباً)</option>
+                                <option value="C">C (يستخدم بحذر)</option>
+                                <option value="D">D (خطر - للضرورة القصوى)</option>
+                                <option value="X">X (ممنوع نهائياً - تشوه)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>نصيحة الصيدلي (Tip)</label>
+                            <input id="dTip" placeholder="مثال: اشرب ماء كثير...">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="saveDrug()" style="margin-top:20px;">
+                        <i class="fas fa-save"></i> حفظ في قاعدة البيانات
+                    </button>
+                </div>
+            </div>
+
+            <div id="manageDrugs" class="tab-content">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h3>📦 الأدوية المسجلة</h3>
+                        <button class="btn btn-primary" style="width:auto; font-size:0.9em;" onclick="loadDrugsTable()">🔄 تحديث القائمة</button>
+                    </div>
+                    
+                    <div style="overflow-x:auto;">
+                        <table id="drugsTable">
+                            <thead>
+                                <tr style="background:#f9fafb;">
+                                    <th>الاسم</th>
+                                    <th>السعر</th>
+                                    <th>التصنيف</th>
+                                    <th>تحكم</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <tr><td colspan="4" style="text-align:center;">اضغط تحديث لتحميل البيانات...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settings" class="tab-content">
+                <div class="card">
+                    <h3>⚙️ إعدادات عامة</h3>
+                    <p>قريباً: التحكم في ألوان الموقع وإيقاف الموقع للصيانة.</p>
+                </div>
+            </div>
+
+        </main>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, onSnapshot, deleteDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB7cYrnnhx_eBsV3IvhAJsM0kzK_I-zpUM",
@@ -123,88 +312,131 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- Navigation ---
-        window.nav = (id) => {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-        }
-
-        // --- 1. Visitor Count & Ticker Load ---
-        async function loadStats() {
-            // Get Visitors
-            const statsDoc = await getDoc(doc(db, "settings", "general"));
-            if (statsDoc.exists()) {
-                document.getElementById('viewCount').innerText = statsDoc.data().visitors || 0;
-                document.getElementById('tickerText').value = statsDoc.data().ticker || "";
+        // --- 1. Auth & Tabs ---
+        window.checkAuth = () => {
+            const pass = document.getElementById('passwordInput').value;
+            if(pass === "123456") {
+                document.getElementById('loginScreen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('app').style.display = 'flex';
+                    loadStats(); // Load data on login
+                }, 500);
+            } else {
+                alert("كلمة المرور خاطئة!");
             }
         }
-        loadStats();
 
-        // --- 2. Save Ticker ---
-        window.saveTicker = async () => {
-            const txt = document.getElementById('tickerText').value;
-            await setDoc(doc(db, "settings", "general"), { ticker: txt }, { merge: true });
-            alert("تم تحديث شريط الأخبار في الموقع! 🎉");
+        window.switchTab = (id, el) => {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+            
+            document.getElementById('pageTitle').innerText = el.innerText;
         }
 
-        // --- 3. Add Drug ---
-        window.addNewDrug = async () => {
+        window.logout = () => location.reload();
+
+        // --- 2. Dashboard Logic ---
+        async function loadStats() {
+            // Get Views
+            try {
+                const settingsRef = doc(db, "settings", "general");
+                const snap = await getDoc(settingsRef);
+                if(snap.exists()) {
+                    document.getElementById('statViews').innerText = snap.data().visitors || 0;
+                    document.getElementById('quickTicker').value = snap.data().ticker || "";
+                }
+                
+                // Get Drugs Count (Estimate)
+                const drugsSnap = await getDocs(collection(db, "drugs"));
+                document.getElementById('statDrugs').innerText = drugsSnap.size;
+                
+                // Get Comments
+                const commSnap = await getDocs(collection(db, "comments"));
+                document.getElementById('statComments').innerText = commSnap.size;
+                
+            } catch(e) { console.error(e); }
+        }
+
+        window.updateTicker = async () => {
+            const txt = document.getElementById('quickTicker').value;
+            try {
+                await setDoc(doc(db, "settings", "general"), { ticker: txt }, { merge: true });
+                alert("تم تحديث شريط الأخبار في الموقع ✅");
+            } catch(e) { alert("خطأ في الاتصال"); }
+        }
+
+        // --- 3. Add Drug Logic ---
+        window.saveDrug = async () => {
             const n = document.getElementById('dN').value;
-            const p = document.getElementById('dP').value;
-            const a = document.getElementById('dA').value;
-            const u = document.getElementById('dU').value;
-
-            if(!n) return alert("اكتب اسم الدواء");
-
-            await addDoc(collection(db, "drugs"), { n, p, a, u, dose: "راجع الطبيب", preg: "C" });
-            alert("تم إضافة الدواء وسيظهر في البحث فوراً ✅");
-            document.getElementById('dN').value = "";
+            if(!n) return alert("اكتب اسم الدواء!");
+            
+            const btn = document.querySelector('#addDrug .btn-primary');
+            btn.innerText = "جاري الحفظ...";
+            
+            try {
+                await setDoc(doc(db, "drugs", n), {
+                    n: n,
+                    p: Number(document.getElementById('dP').value),
+                    a: document.getElementById('dA').value,
+                    c: document.getElementById('dCat').value,
+                    u: document.getElementById('dU').value,
+                    dose: document.getElementById('dDose').value,
+                    eff: document.getElementById('dEff').value,
+                    con: document.getElementById('dCon').value,
+                    preg: document.getElementById('dPreg').value,
+                    tip: document.getElementById('dTip').value,
+                    searchKey: n.toLowerCase()
+                });
+                
+                alert("تمت الإضافة بنجاح! 🎉");
+                // Reset inputs
+                document.querySelectorAll('input, textarea').forEach(i => i.value = '');
+                btn.innerHTML = '<i class="fas fa-save"></i> حفظ في قاعدة البيانات';
+                loadStats(); // Update counter
+            } catch(e) {
+                alert("خطأ: " + e.message);
+                btn.innerText = "حاول مرة أخرى";
+            }
         }
 
-        // --- 4. Manage Comments ---
-        // جلب التعليقات المعلقة
-        const qPending = query(collection(db, "comments"), where("status", "==", "pending"));
-        onSnapshot(qPending, (snap) => {
-            const div = document.getElementById('pendingList');
-            div.innerHTML = "";
-            snap.forEach(d => {
-                const data = d.data();
-                div.innerHTML += `
-                <div class="comment-item pending">
-                    <div>
-                        <strong>${data.name}</strong>: ${data.text}
-                    </div>
-                    <div>
-                        <button class="btn-approve" onclick="approveComm('${d.id}')">موافقة</button>
-                        <button class="btn-del" onclick="deleteComm('${d.id}')">حذف</button>
-                    </div>
-                </div>`;
-            });
-            if(div.innerHTML == "") div.innerHTML = "لا يوجد تعليقات معلقة.";
-        });
-
-        // جلب التعليقات المنشورة
-        const qApproved = query(collection(db, "comments"), where("status", "==", "approved"));
-        onSnapshot(qApproved, (snap) => {
-            const div = document.getElementById('approvedList');
-            div.innerHTML = "";
-            snap.forEach(d => {
-                const data = d.data();
-                div.innerHTML += `
-                <div class="comment-item approved">
-                    <div><strong>${data.name}</strong>: ${data.text}</div>
-                    <button class="btn-del" onclick="deleteComm('${d.id}')">حذف</button>
-                </div>`;
-            });
-        });
-
-        window.approveComm = async (id) => {
-            await updateDoc(doc(db, "comments", id), { status: "approved" });
+        // --- 4. Manage Drugs (Table & Delete) ---
+        window.loadDrugsTable = async () => {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">جاري التحميل...</td></tr>';
+            
+            try {
+                const snap = await getDocs(collection(db, "drugs"));
+                tbody.innerHTML = "";
+                
+                snap.forEach(docSnap => {
+                    const d = docSnap.data();
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:bold; color:var(--primary);">${d.n}</td>
+                            <td>${d.p} ج.م</td>
+                            <td><span style="background:#e0f2fe; padding:3px 8px; border-radius:10px; font-size:0.8em;">${d.c}</span></td>
+                            <td>
+                                <button class="btn-danger" onclick="deleteDrug('${docSnap.id}')"><i class="fas fa-trash"></i> حذف</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                if(snap.empty) tbody.innerHTML = '<tr><td colspan="4">لا يوجد أدوية</td></tr>';
+                
+            } catch(e) { console.error(e); }
         }
-        window.deleteComm = async (id) => {
-            if(confirm("حذف التعليق نهائياً؟")) await deleteDoc(doc(db, "comments", id));
+
+        window.deleteDrug = async (id) => {
+            if(confirm(`هل أنت متأكد من حذف ${id} نهائياً؟`)) {
+                await deleteDoc(doc(db, "drugs", id));
+                loadDrugsTable(); // Refresh table
+                alert("تم الحذف.");
+            }
         }
 
     </script>
