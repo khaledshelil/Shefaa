@@ -931,80 +931,52 @@
 
     // --- Core Render Logic with Safety Checks ---
         // --- دالة العرض النظيفة (بدون بروفايلات) ---
-    function render(list, highlightTerm = "") {
-        const bar = document.getElementById('loadingBar');
-        bar.style.width = "70%";
-        
+        function render(list, highlightTerm = "") {
         const div = document.getElementById('list');
         div.innerHTML = '';
         
-        let displayList = list;
-        // فلتر الحمل لسه شغال لو الزرار مفعل
-        if(pregMode) {
-            displayList = list.filter(d => d.preg === 'A' || d.preg === 'B');
+        // إخفاء شريط التحميل لو موجود
+        if(document.getElementById('loadingBar')) {
+             document.getElementById('loadingBar').style.width = "100%";
+             setTimeout(()=>document.getElementById('loadingBar').style.width="0%", 300);
         }
 
-        if(displayList.length === 0) { 
+        if(list.length === 0) { 
             div.innerHTML = '<p style="text-align:center; padding:20px;">لا توجد نتائج بحث</p>'; 
-            bar.style.width = "100%"; setTimeout(()=>bar.style.width="0%", 300);
             return; 
         }
         
-        displayList.forEach(d => {
-            // التحقق من القوائم
+        list.forEach(d => {
             const inCab = myCabinet.includes(d.n);
             const inFav = myFavorites.includes(d.n);
             
-            // ألوان الحمل
+            // تحديد لون أيقونة الحمل
             let pColor = "#7f8c8d";
-            if(d.preg=="A") pColor="#27ae60"; if(d.preg=="B") pColor="#2ecc71";
-            if(d.preg=="C") pColor="#f1c40f"; if(d.preg=="D") pColor="#e67e22"; if(d.preg=="X") pColor="#c0392b";
-
-            // تلوين البحث
-            let dName = d.n;
-            let dUse = d.u;
-            if(highlightTerm) {
-                const re = new RegExp(`(${highlightTerm})`, "gi");
-                dName = dName.replace(re, "<mark>$1</mark>");
-                dUse = dUse.replace(re, "<mark>$1</mark>");
-            }
-
-            const priceChanged = Math.random() > 0.8; 
-
-            // --- تم حذف جزء التحذيرات الذكية (Smart Warnings) ---
+            if(d.preg=="A" || d.preg=="B") pColor="#2ecc71"; // أخضر
+            else if(d.preg=="C") pColor="#f1c40f"; // أصفر
+            else pColor="#c0392b"; // أحمر
 
             div.innerHTML += `
-            <div class="card" data-aos="fade-up" data-aos-duration="800">
+            <div class="card" data-aos="fade-up">
                 <div class="card-head">
                     <div style="flex:1">
-                        <span class="drug-name">${dName}</span>
+                        <span class="drug-name">${d.n}</span>
                         <div class="info">💊 ${d.a || ''}</div>
-                        <div class="info">🩺 ${dUse || ''}</div>
+                        <div class="info">🩺 ${d.u || ''}</div>
                     </div>
                     <div style="text-align:left">
                         <span class="price-tag">${d.p} ج.م</span>
-                        ${priceChanged ? '<div class="price-badge">تغير السعر</div>' : ''}
-                        <div class="preg-badge" style="background:${pColor}; position:relative; top:5px; left:0; display:inline-block; margin-top:5px; padding:2px 8px; border-radius:5px; color:white; font-weight:bold; font-size:0.8em;">${d.preg || '?'}</div>
+                        <div class="preg-badge" style="background:${pColor}; display:inline-block; margin-top:5px; padding:2px 8px; border-radius:5px; color:white; font-size:0.8em;">${d.preg || '?'}</div>
                     </div>
                 </div>
                 
                 <div class="btns">
                     <button class="btn btn-main" onclick='openDetails(${JSON.stringify(d)})'>ℹ️ نشرة</button>
-                    <button class="btn btn-alt" onclick='showAlts("${d.a}")'>🔄 بدائل</button>
                     <button class="btn" onclick="addToCabinet('${d.n}')">${inCab ? '🗑️' : '➕ حفظ'}</button>
                     <button class="btn" style="color:${inFav ? 'red':'#555'}" onclick="toggleFav('${d.n}')">❤️</button>
-                    <button class="btn btn-tool" onclick='speak("${d.n}")'>🔊 نطق</button>
-                    <button class="btn btn-tool" onclick='toggleCompare("${d.n}")'>⚖️ قارن</button>
-                    <button class="btn btn-tool" onclick='shareDrug("${d.n}", "${d.p}")'>🔗 نشر</button>
                 </div>
             </div>`;
         });
-        bar.style.width = "100%"; setTimeout(()=>bar.style.width="0%", 300);
-    }
-
-            </div>`;
-        });
-        bar.style.width = "100%"; setTimeout(()=>bar.style.width="0%", 300);
     }
 
     function openDetails(d) {
@@ -1065,7 +1037,7 @@
             }
         }
         // Save to Specific Profile Cabinet
-        localStorage.setItem(`cabinet_${currentProfile.id}`, JSON.stringify(myCabinet));
+        localStorage.setItem('myCabinet', JSON.stringify(myCabinet));
         render(db);
     }
     
