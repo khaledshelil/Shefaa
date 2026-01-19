@@ -422,29 +422,6 @@
     </div>
 </div>
 
-<div id="profilesModal" class="modal" style="z-index: 6000;">
-    <div class="modal-box" style="text-align: center; background: linear-gradient(135deg, #fff, #f0f2f5);">
-        <h2 style="color:var(--main); margin-bottom: 5px;">من يبحث عن الدواء اليوم؟</h2>
-        <p style="color:#777; margin-bottom: 20px;">اختر الملف للحصول على تنبيهات مخصصة</p>
-        
-        <div class="profile-grid">
-            <div class="profile-item" onclick="switchProfile(0)">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="profile-avatar" id="avatar0">
-                <div class="profile-name">الأب (الكل)</div>
-            </div>
-            <div class="profile-item" onclick="switchProfile(1)">
-                <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png" class="profile-avatar" id="avatar1">
-                <div class="profile-name">طفل (5 سنوات)</div>
-            </div>
-            <div class="profile-item" onclick="switchProfile(2)">
-                <img src="https://cdn-icons-png.flaticon.com/512/3063/3063822.png" class="profile-avatar" id="avatar2">
-                <div class="profile-name">الجد (ضغط)</div>
-            </div>
-        </div>
-        <button onclick="closeM('profilesModal')" class="btn" style="margin-top:20px; background:transparent; color:#555;">تخطي</button>
-    </div>
-</div>
-
 <div id="diagModal" class="modal">
     <div class="modal-box" style="height: 80vh; display: flex; flex-direction: column;">
         <span class="close" onclick="closeM('diagModal')">&times;</span>
@@ -590,13 +567,14 @@
   });
 
   // --- NEW: Takeoff Animation Function ---
-  function startApp() {
+    function startApp() {
       const screen = document.getElementById('welcomeScreen');
       screen.classList.add('fly-away'); // تشغيل الأنيميشن
       
       setTimeout(() => {
           screen.style.display = 'none'; // إخفاء الشاشة
-          openModal('profilesModal'); // فتح المودال التالي
+          // openModal('profilesModal');  <-- ده السطر اللي لغيناه
+          // مفيش حاجة تانية تتعمل، الموقع هيظهر لوحده
       }, 1000);
   }
 </script>
@@ -821,32 +799,6 @@
         {n:"Chromax",p:79,c:"تخسيس",a:"Garcinia Cambogia",u:"سد الشهية وحرق النشويات.",dose:"كبيسولة قبل الأكل بنصف ساعة.",eff:"جفاف الفم.",con:"الحمل والرضاعة.",tip:"يساعد على حرق النشويات وسد الشهية بشكل طبيعي.",preg:"C"}
     ];
 
-    // --- Profiles Data Logic ---
-    const profiles = [
-        {id: 0, name: "الأب (المدير)", img: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png", age: 40, chronic: []},
-        {id: 1, name: "طفل (5 سنوات)", img: "https://cdn-icons-png.flaticon.com/512/2922/2922510.png", age: 5, chronic: []},
-        {id: 2, name: "الجد (ضغط)", img: "https://cdn-icons-png.flaticon.com/512/3063/3063822.png", age: 70, chronic: ["pressure"]}
-    ];
-    let currentProfile = profiles[0]; // Default
-
-    function switchProfile(id) {
-        currentProfile = profiles[id];
-        // تحديث صورة الهيدر
-        document.getElementById('headerProfileImg').src = currentProfile.img;
-        // تحديث كلاسات الـ Active في المودال
-        document.querySelectorAll('.profile-item').forEach(el => el.classList.remove('active'));
-        // إضافة الكلاس للعنصر المختار (بسيط)
-        const selected = document.querySelectorAll('.profile-item')[id];
-        if(selected) selected.classList.add('active');
-        
-        closeM('profilesModal');
-        showToast(`أهلاً بك، ${currentProfile.name} 👋`);
-        
-        // إعادة تحميل القائمة لتطبيق الفلترة الجديدة
-        myCabinet = JSON.parse(localStorage.getItem(`cabinet_${currentProfile.id}`)) || [];
-        render(db);
-    }
-
     // حفظ الوزن والـ BMI
     let myCabinet = JSON.parse(localStorage.getItem(`cabinet_${currentProfile.id}`)) || [];
     let myFavorites = JSON.parse(localStorage.getItem('myFavorites')) || []; 
@@ -978,6 +930,7 @@
     }
 
     // --- Core Render Logic with Safety Checks ---
+        // --- دالة العرض النظيفة (بدون بروفايلات) ---
     function render(list, highlightTerm = "") {
         const bar = document.getElementById('loadingBar');
         bar.style.width = "70%";
@@ -986,6 +939,7 @@
         div.innerHTML = '';
         
         let displayList = list;
+        // فلتر الحمل لسه شغال لو الزرار مفعل
         if(pregMode) {
             displayList = list.filter(d => d.preg === 'A' || d.preg === 'B');
         }
@@ -997,12 +951,16 @@
         }
         
         displayList.forEach(d => {
+            // التحقق من القوائم
             const inCab = myCabinet.includes(d.n);
             const inFav = myFavorites.includes(d.n);
+            
+            // ألوان الحمل
             let pColor = "#7f8c8d";
             if(d.preg=="A") pColor="#27ae60"; if(d.preg=="B") pColor="#2ecc71";
             if(d.preg=="C") pColor="#f1c40f"; if(d.preg=="D") pColor="#e67e22"; if(d.preg=="X") pColor="#c0392b";
 
+            // تلوين البحث
             let dName = d.n;
             let dUse = d.u;
             if(highlightTerm) {
@@ -1013,35 +971,20 @@
 
             const priceChanged = Math.random() > 0.8; 
 
-            // --- Check Safety for Current Profile ---
-            let safetyHTML = "";
-            // 1. Check Pressure (Profile 2)
-            if(currentProfile.chronic.includes("pressure")) {
-                if(d.a.includes("Pseudo") || d.con.includes("الضغط") || d.a.includes("Ibuprofen")) {
-                    safetyHTML += `<div class="smart-warning"><i class="fas fa-exclamation-triangle"></i> تنبيه: قد يرفع الضغط! استشر طبيبك.</div>`;
-                }
-            }
-            // 2. Check Child (Profile 1)
-            if(currentProfile.age < 12) {
-                // If it looks like a tablet (not syrup/drops) and is strong
-                if(!d.n.includes("Syrup") && !d.n.includes("Drops") && !d.n.includes("Supp")) {
-                     safetyHTML += `<div class="smart-info"><i class="fas fa-child"></i> هذا دواء للكبار. هل تبحث عن شراب؟</div>`;
-                }
-            }
+            // --- تم حذف جزء التحذيرات الذكية (Smart Warnings) ---
 
-            // [NEW] Added AOS Animation Attributes
             div.innerHTML += `
             <div class="card" data-aos="fade-up" data-aos-duration="800">
                 <div class="card-head">
                     <div style="flex:1">
                         <span class="drug-name">${dName}</span>
-                        <div class="info">💊 ${d.a}</div>
-                        <div class="info">🩺 ${dUse}</div>
-                        ${safetyHTML} </div>
+                        <div class="info">💊 ${d.a || ''}</div>
+                        <div class="info">🩺 ${dUse || ''}</div>
+                    </div>
                     <div style="text-align:left">
                         <span class="price-tag">${d.p} ج.م</span>
                         ${priceChanged ? '<div class="price-badge">تغير السعر</div>' : ''}
-                        <div class="preg-badge" style="background:${pColor}; position:relative; top:5px; left:0; display:inline-block; margin-top:5px; padding:2px 8px; border-radius:5px; color:white; font-weight:bold; font-size:0.8em;">${d.preg}</div>
+                        <div class="preg-badge" style="background:${pColor}; position:relative; top:5px; left:0; display:inline-block; margin-top:5px; padding:2px 8px; border-radius:5px; color:white; font-weight:bold; font-size:0.8em;">${d.preg || '?'}</div>
                     </div>
                 </div>
                 
@@ -1054,6 +997,11 @@
                     <button class="btn btn-tool" onclick='toggleCompare("${d.n}")'>⚖️ قارن</button>
                     <button class="btn btn-tool" onclick='shareDrug("${d.n}", "${d.p}")'>🔗 نشر</button>
                 </div>
+            </div>`;
+        });
+        bar.style.width = "100%"; setTimeout(()=>bar.style.width="0%", 300);
+    }
+
             </div>`;
         });
         bar.style.width = "100%"; setTimeout(()=>bar.style.width="0%", 300);
