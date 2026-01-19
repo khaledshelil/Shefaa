@@ -1656,6 +1656,61 @@
     }
 
 </script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyB7cYrnnhx_eBsV3IvhAJsM0kzK_I-zpUM",
+        authDomain: "sheffa-pro.firebaseapp.com",
+        projectId: "sheffa-pro",
+        storageBucket: "sheffa-pro.firebasestorage.app",
+        messagingSenderId: "542669946824",
+        appId: "1:542669946824:web:f6c0826ee500344f278afd",
+        measurementId: "G-XSQ9Q08JLQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const dbFire = getFirestore(app);
+
+    // 1. تحديث شريط النصائح لحظياً
+    const tickerRef = doc(dbFire, "settings", "general");
+    onSnapshot(tickerRef, (doc) => {
+        if (doc.exists() && doc.data().ticker) {
+            const tickerEl = document.querySelector('.ticker');
+            if(tickerEl) tickerEl.innerHTML = doc.data().ticker;
+        }
+    });
+
+    // 2. جلب الأدوية الإضافية من فايربيس ودمجها مع الموقع
+    async function loadFirebaseDrugs() {
+        try {
+            const querySnapshot = await getDocs(collection(dbFire, "drugs"));
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                // إضافة الدواء لقائمة البحث الموجودة في الموقع
+                if(typeof db !== 'undefined') {
+                    db.push({
+                        n: data.n,           // الاسم
+                        p: data.p,           // السعر
+                        c: data.c || "عام",  // التصنيف
+                        a: data.a || "",     // المادة الفعالة
+                        u: data.u || "",     // الاستخدام
+                        dose: data.dose || "", 
+                        eff: data.eff || "",
+                        con: data.con || "",
+                        tip: data.tip || "",
+                        preg: data.preg || "C"
+                    });
+                }
+            });
+            console.log("تم تحميل أدوية إضافية من السحابة ☁️");
+        } catch(e) {
+            console.error("لا يوجد اتصال بالإنترنت لجلب الأدوية الجديدة");
+        }
+    }
+    loadFirebaseDrugs();
+</script>
 
 </body>
 </html>
