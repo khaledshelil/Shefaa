@@ -35,6 +35,16 @@
             --success: #27ae60; --danger: #c0392b; --warning: #f39c12; --purple: #8e44ad; --pink: #e91e63;
             --shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
+        /* تنسيق صورة البروفايل الجديدة */
+.header-profile-btn {
+    width: 45px; height: 45px; border-radius: 50%;
+    border: 2px solid white; box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    overflow: hidden; cursor: pointer; transition: 0.3s;
+    background: #ccc; display: flex; align-items: center; justify-content: center;
+}
+.header-profile-btn img { width: 100%; height: 100%; object-fit: cover; }
+.header-profile-btn:hover { transform: scale(1.1); border-color: gold; }
+ ا
         [data-theme="dark"] {
             --main: #64b5f6; --main-light: #42a5f5; --bg: #121212; --card: #1e1e1e; --text: #e0e0e0;
             --shadow: 0 5px 15px rgba(0,0,0,0.5);
@@ -300,17 +310,23 @@
 <header>
     <div class="header-content">
         <div class="logo-box">
-            <img src="logo.png" class="logo-img">
-            <div class="brand-text">
-                <h1>Shefaa</h1>
-                <p>دليلك الدوائي الذكي | <span class="verified-badge">✔</span> د. خالد شليل</p>
-            </div>
+        <img src="logo.png" class="logo-img">
+        <div class="brand-text">
+            <h1>Shefaa</h1>
+            <p>دليلك الدوائي الذكي</p>
         </div>
-        <div style="display:flex; gap:10px;">
-            <div class="user-icon" onclick="toggleDarkMode()" title="الوضع الليلي"><i id="themeIcon" class="fas fa-moon"></i></div>
-            <div class="user-icon" onclick="openModal('profilesModal')" style="overflow:hidden; border:2px solid gold;">
-                <img id="headerProfileImg" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width:100%; height:100%; object-fit:cover;">
-            </div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:15px;">
+        <div class="user-icon" onclick="toggleDarkMode()" style="width:35px; height:35px;">
+            <i id="themeIcon" class="fas fa-moon"></i>
+        </div>
+
+        <div class="header-profile-btn" onclick="checkUserAndOpen()" id="headerProfileBtn">
+            <i class="fas fa-user"></i> 
+        </div>
+    </div>
+
         </div>
     </div>
 
@@ -564,6 +580,43 @@
 <div id="bodyMapModal" class="modal"><div class="modal-box" style="text-align:center;"><span class="close" onclick="closeM('bodyMapModal')">&times;</span><h3 style="color:var(--main)">💀 أين تشعر بالألم؟</h3><p style="color:#777; font-size:0.9em; margin-bottom:10px;">اضغط على الجزء المصاب في الهيكل العظمي</p><div class="body-map-container"><div class="hotspot spot-head" onclick="filterByBody('صداع'); closeM('bodyMapModal')" title="صداع / الرأس"></div><div class="hotspot spot-throat" onclick="filterByBody('برد'); closeM('bodyMapModal')" title="حلق/أنف"></div><div class="hotspot spot-chest" onclick="filterByBody('كحة'); closeM('bodyMapModal')" title="صدر/كحة"></div><div class="hotspot spot-stomach" onclick="filterByBody('معدة'); closeM('bodyMapModal')" title="معدة/قولون"></div><div class="hotspot spot-bones" onclick="filterByBody('عظام'); closeM('bodyMapModal')" title="عظام/مفاصل"></div></div></div></div>
 <div id="firstAidModal" class="modal"><div class="modal-box" style="background:#fff8e1;"><span class="close" onclick="closeM('firstAidModal')">&times;</span><h2 style="color:#e65100; text-align:center;">🚑 الإسعافات الأولية</h2><div class="aid-item" onclick="toggleAid(this)"><h3>🔥 الحروق <i class="fas fa-chevron-down"></i></h3><div class="aid-steps">1. ضع المنطقة المحروقة تحت ماء صنبور جاري (فاتر) لمدة 10-20 دقيقة.<br>2. لا تضع ثلج، معجون أسنان، أو زيت.<br>3. غط الحرق بشاش فازلين معقم.<br>4. إذا كان الحرق كبيراً أو في الوجه، اتصل بالإسعاف.</div></div><div class="aid-item" onclick="toggleAid(this)"><h3>🩸 النزيف والجروح <i class="fas fa-chevron-down"></i></h3><div class="aid-steps">1. اضغط مباشرة على الجرح بقطعة قماش نظيفة لوقف النزيف.<br>2. ارفع العضو المصاب فوق مستوى القلب.<br>3. طهر الجرح بماء ومطهر (بيتادين) ثم غطه.<br>4. لو النزيف لم يتوقف، اتجه للمستشفى فوراً.</div></div><div class="aid-item" onclick="toggleAid(this)"><h3>🌭 الاختناق (شرقة) <i class="fas fa-chevron-down"></i></h3><div class="aid-steps">1. شجع المصاب على السعال (الكحة).<br>2. لو لم يستطع التنفس، قف خلفه واشبك يديك فوق سرته (مناورة هيمليك).<br>3. اضغط للداخل ولأعلى بقوة لطرد الجسم الغريب.<br>4. كرر حتى يخرج الجسم أو يفقد المصاب الوعي.</div></div><div class="aid-item" onclick="toggleAid(this)"><h3>💤 الإغماء <i class="fas fa-chevron-down"></i></h3><div class="aid-steps">1. مدد المصاب على ظهره وارفع قدميه لأعلى.<br>2. فك أي ملابس ضيقة حول الرقبة.<br>3. لا تعطه ماء وهو فاقد الوعي.<br>4. لو لم يفق خلال دقيقة، اتصل بالإسعاف وافحص التنفس.</div></div><div class="aid-item" onclick="toggleAid(this)"><h3>⚡ التسمم <i class="fas fa-chevron-down"></i></h3><div class="aid-steps">1. اتصل بمركز السموم فوراً (137).<br>2. لا تجعل المصاب يتقيأ إلا بأمر الطبيب.<br>3. احتفظ بعلبة المادة التي ابتلعها.<br>4. لو المادة كيميائية على الجلد، اغسلها بماء غزير.</div></div></div></div>
 <div id="loginModal" class="modal"><div class="modal-box" style="text-align:center;"><span class="close" onclick="closeM('loginModal')">&times;</span><h3 style="color:var(--main)">تسجيل الدخول / إنشاء حساب</h3><input type="email" id="uEmail" placeholder="البريد الإلكتروني" class="login-input" style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:5px;"><input type="password" id="uPass" placeholder="كلمة المرور (6 أرقام)" class="login-input" style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:5px;"><div style="display:flex; gap:10px; justify-content:center;"><button class="login-btn" onclick="window.doLogin()" style="width:45%; cursor:pointer;">دخول</button><button class="login-btn" onclick="window.doRegister()" style="background:#27ae60; width:45%; cursor:pointer;">حساب جديد</button></div><div id="loginStatus" style="margin-top:15px; font-weight:bold; color:#d32f2f;"></div><div id="userInfoArea" style="display:none; margin-top:20px; border-top:1px solid #eee; padding-top:10px;"><p style="color:green">أهلاً بك، <span id="displayEmail"></span></p><button onclick="window.doLogout()" class="btn" style="background:#c0392b; color:white;">تسجيل خروج</button></div></div></div>
+<div id="userProfileModal" class="modal">
+    <div class="modal-box" style="text-align:center; max-width:400px;">
+        <span class="close" onclick="closeM('userProfileModal')">&times;</span>
+        
+        <h3 style="color:var(--main)">ملفي الشخصي 👤</h3>
+        
+        <div style="margin: 20px auto; width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--main); overflow: hidden; position: relative;">
+            <img id="profilePreview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        
+        <label for="imgInput" class="btn btn-alt" style="margin-bottom:15px; display:inline-block; cursor:pointer;">
+            <i class="fas fa-camera"></i> تغيير الصورة
+        </label>
+        <input type="file" id="imgInput" style="display:none" accept="image/*" onchange="previewImage()">
+
+        <div style="text-align:right; margin-bottom:10px;">
+            <label style="font-size:0.9em; font-weight:bold;">الاسم:</label>
+            <input type="text" id="profName" class="login-input" placeholder="اسمك الثنائي" style="width:100%; padding:10px; margin-top:5px; border:1px solid #ddd; border-radius:5px;">
+        </div>
+        
+        <div style="text-align:right; margin-bottom:10px;">
+            <label style="font-size:0.9em; font-weight:bold;">رقم الهاتف:</label>
+            <input type="tel" id="profPhone" class="login-input" placeholder="01xxxxxxxxx" style="width:100%; padding:10px; margin-top:5px; border:1px solid #ddd; border-radius:5px;">
+        </div>
+
+        <div style="text-align:right; margin-bottom:20px;">
+            <label style="font-size:0.9em; font-weight:bold;">البريد:</label>
+            <input type="text" id="profEmail" class="login-input" disabled style="background:#eee; color:#777; width:100%; padding:10px; margin-top:5px; border:1px solid #ddd; border-radius:5px;">
+        </div>
+
+        <button onclick="saveUserProfile()" class="btn btn-main" style="width:100%; padding:12px; font-size:1.1em; background:var(--main); color:white; border:none; border-radius:10px; cursor:pointer;">💾 حفظ البيانات</button>
+        
+        <hr style="margin:20px 0; border-top:1px solid #eee;">
+        <button onclick="window.doLogout()" class="btn" style="background:#ffebee; color:red; width:100%; padding:10px; border:none; border-radius:10px; cursor:pointer;">تسجيل خروج</button>
+    </div>
+</div>
+
 <div id="faqModal" class="modal"><div class="modal-box"><span class="close" onclick="closeM('faqModal')">&times;</span><h3 style="color:var(--main); text-align:center;">❓ الأسئلة الشائعة</h3><div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">هل المعلومات بديلة للطبيب؟ <i class="fas fa-chevron-down"></i></div><div class="faq-a">لا، المعلومات إرشادية فقط.</div></div><div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">من المطور؟ <i class="fas fa-chevron-down"></i></div><div class="faq-a">د. خالد شليل، جامعة العلمين.</div></div></div></div>
 <div id="reminderModal" class="modal"><div class="modal-box" style="text-align:center;"><span class="close" onclick="closeM('reminderModal')">&times;</span><h3 style="color:var(--warning)">⏰ منبه الدواء</h3><input type="text" placeholder="اسم الدواء" class="login-input" id="remindName"><input type="time" class="login-input" id="remindTime"><button class="login-btn" style="background:var(--warning); color:black;" onclick="setReminder()">ضبط</button><div id="remindStatus" style="margin-top:10px; color:green; font-weight:bold;"></div></div></div>
 <div id="aboutModal" class="modal"><div class="modal-box" style="text-align:center;"><span class="close" onclick="closeM('aboutModal')">&times;</span><img src="logo.png" style="width:80px; margin-bottom:10px;"><h2 style="color:var(--main);">د. خالد محمود شليل</h2><p style="font-size:1.1em; color:#555;">طالب بكلية الصيدلة الإكلينيكية</p><p style="font-size:1.1em; font-weight:bold; color:var(--main);">جامعة العلمين الدولية</p><hr><p>مطور ويب مهتم بالرعاية الصحية الرقمية.</p><p>للتواصل: <br><a href="mailto:khaled00shelil@gmail.com">khaled00shelil@gmail.com</a></p></div></div>
@@ -1657,9 +1710,13 @@
 
 </script>
 <script type="module">
+    // استدعاء مكتبات فايربيس (Auth, Firestore, AI)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getVertexAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-vertexai.js";
 
+    // إعدادات مشروعك
     const firebaseConfig = {
         apiKey: "AIzaSyB7cYrnnhx_eBsV3IvhAJsM0kzK_I-zpUM",
         authDomain: "sheffa-pro.firebaseapp.com",
@@ -1670,47 +1727,252 @@
         measurementId: "G-XSQ9Q08JLQ"
     };
 
+    // تشغيل الخدمات
     const app = initializeApp(firebaseConfig);
     const dbFire = getFirestore(app);
+    const auth = getAuth(app);
+    const vertexAI = getVertexAI(app);
+    const model = getGenerativeModel(vertexAI, { model: "gemini-1.5-flash" });
 
-    // 1. تحديث شريط النصائح لحظياً
-    const tickerRef = doc(dbFire, "settings", "general");
-    onSnapshot(tickerRef, (doc) => {
-        if (doc.exists() && doc.data().ticker) {
-            const tickerEl = document.querySelector('.ticker');
-            if(tickerEl) tickerEl.innerHTML = doc.data().ticker;
+    // متغير لتخزين الصورة الجديدة مؤقتاً
+    let newProfileImageBase64 = null;
+
+    // ==========================================
+    // 1. مراقب المستخدم (القلب النابض للموقع)
+    // ==========================================
+    onAuthStateChanged(auth, async (user) => {
+        const btn = document.getElementById('headerProfileBtn');
+        
+        if (user) {
+            // --- حالة: المستخدم مسجل دخول ---
+            
+            // جلب بياناته من السحابة
+            const docRef = doc(dbFire, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+            
+            let photo = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; // صورة افتراضية
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                if(data.photoBase64) photo = data.photoBase64;
+                
+                // ملء بيانات المودال (الاسم، الهاتف، البريد)
+                if(document.getElementById('profName')) document.getElementById('profName').value = data.fullName || "";
+                if(document.getElementById('profPhone')) document.getElementById('profPhone').value = data.phone || "";
+                if(document.getElementById('profEmail')) document.getElementById('profEmail').value = user.email;
+                if(document.getElementById('profilePreview')) document.getElementById('profilePreview').src = photo;
+                
+                // مزامنة الحقيبة والمفضلة من السحابة للموقع
+                if(data.cabinet) { 
+                    localStorage.setItem(`cabinet_0`, JSON.stringify(data.cabinet)); 
+                    // تحديث المتغير المحلي لو موجود
+                    if(typeof myCabinet !== 'undefined') myCabinet = data.cabinet;
+                }
+                if(data.favorites) {
+                    localStorage.setItem(`myFavorites`, JSON.stringify(data.favorites));
+                    if(typeof myFavorites !== 'undefined') myFavorites = data.favorites;
+                }
+                
+                // تحديث واجهة الموقع بالبيانات الجديدة
+                if(typeof render === 'function') render(db);
+            }
+
+            // تحديث زر الهيدر بصورة المستخدم
+            btn.innerHTML = `<img src="${photo}" style="width:100%; height:100%; object-fit:cover;">`;
+            btn.style.border = "2px solid #4CAF50"; // إطار أخضر دليل الأونلاين
+            btn.onclick = () => document.getElementById('userProfileModal').style.display = 'flex';
+
+        } else {
+            // --- حالة: زائر (غير مسجل) ---
+            btn.innerHTML = `<i class="fas fa-user"></i>`;
+            btn.style.background = "#ccc";
+            btn.style.border = "2px solid white";
+            btn.onclick = () => document.getElementById('loginModal').style.display = 'flex';
         }
     });
 
-    // 2. جلب الأدوية الإضافية من فايربيس ودمجها مع الموقع
-    async function loadFirebaseDrugs() {
-        try {
-            const querySnapshot = await getDocs(collection(dbFire, "drugs"));
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                // إضافة الدواء لقائمة البحث الموجودة في الموقع
-                if(typeof db !== 'undefined') {
-                    db.push({
-                        n: data.n,           // الاسم
-                        p: data.p,           // السعر
-                        c: data.c || "عام",  // التصنيف
-                        a: data.a || "",     // المادة الفعالة
-                        u: data.u || "",     // الاستخدام
-                        dose: data.dose || "", 
-                        eff: data.eff || "",
-                        con: data.con || "",
-                        tip: data.tip || "",
-                        preg: data.preg || "C"
-                    });
-                }
-            });
-            console.log("تم تحميل أدوية إضافية من السحابة ☁️");
-        } catch(e) {
-            console.error("لا يوجد اتصال بالإنترنت لجلب الأدوية الجديدة");
+    // ==========================================
+    // 2. دوال البروفايل (رفع الصورة والحفظ)
+    // ==========================================
+    window.previewImage = function() {
+        const file = document.getElementById('imgInput').files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                newProfileImageBase64 = reader.result;
+                document.getElementById('profilePreview').src = reader.result;
+            }
+            reader.readAsDataURL(file);
         }
+    };
+
+    window.saveUserProfile = async function() {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const name = document.getElementById('profName').value;
+        const phone = document.getElementById('profPhone').value;
+
+        let updateData = { fullName: name, phone: phone };
+        if (newProfileImageBase64) updateData.photoBase64 = newProfileImageBase64;
+
+        try {
+            const saveBtn = document.querySelector('#userProfileModal button');
+            const oldText = saveBtn.innerText;
+            saveBtn.innerText = "جاري الرفع للسحابة...";
+            
+            await setDoc(doc(dbFire, "users", user.uid), updateData, { merge: true });
+            
+            alert("تم حفظ بياناتك بنجاح ✅");
+            saveBtn.innerText = oldText;
+            
+            // تحديث فوري للصورة في الهيدر
+            if(newProfileImageBase64) {
+                document.getElementById('headerProfileBtn').innerHTML = `<img src="${newProfileImageBase64}" style="width:100%; height:100%; object-fit:cover;">`;
+            }
+            document.getElementById('userProfileModal').style.display = 'none';
+
+        } catch (e) { alert("خطأ: " + e.message); }
+    };
+
+    // ==========================================
+    // 3. دوال التسجيل (Login / Register / Logout)
+    // ==========================================
+    window.doRegister = async function() {
+        const email = document.getElementById('uEmail').value;
+        const pass = document.getElementById('uPass').value;
+        const status = document.getElementById('loginStatus');
+        
+        if(pass.length < 6) { status.innerText = "كلمة المرور ضعيفة (6 أرقام على الأقل)"; return; }
+
+        try {
+            status.innerText = "جاري إنشاء الحساب...";
+            const cred = await createUserWithEmailAndPassword(auth, email, pass);
+            // إنشاء وثيقة فارغة للمستخدم
+            await setDoc(doc(dbFire, "users", cred.user.uid), { 
+                email: email, 
+                joinedAt: new Date(),
+                cabinet: [],
+                favorites: []
+            });
+            document.getElementById('loginModal').style.display = 'none';
+            alert("تم إنشاء الحساب بنجاح! أهلاً بك.");
+        } catch (e) { status.innerText = "خطأ: " + e.message; }
+    };
+
+    window.doLogin = async function() {
+        const email = document.getElementById('uEmail').value;
+        const pass = document.getElementById('uPass').value;
+        const status = document.getElementById('loginStatus');
+
+        try {
+            status.innerText = "جاري التحقق...";
+            await signInWithEmailAndPassword(auth, email, pass);
+            document.getElementById('loginModal').style.display = 'none';
+        } catch (e) { status.innerText = "بيانات الدخول غير صحيحة"; }
+    };
+
+    window.doLogout = function() {
+        if(confirm("هل تريد تسجيل الخروج؟")) {
+            signOut(auth).then(() => location.reload());
+        }
+    };
+    
+    // دالة مساعدة لفتح المودال (مربوطة بالـ HTML)
+    window.checkUserAndOpen = function() { /* Logic handled in onAuthStateChanged */ };
+
+    // ==========================================
+    // 4. ربط "الحقيبة" و "المفضلة" بالسحابة (Sync)
+    // ==========================================
+    
+    // نحتفظ بالدوال القديمة لو موجودة
+    const originalAddToCabinet = window.addToCabinet || function(){};
+    const originalToggleFav = window.toggleFav || function(){};
+
+    window.addToCabinet = function(n) {
+        // تشغيل المنطق القديم (عشان التوست والواجهة)
+        if(typeof myCabinet !== 'undefined') {
+             if(myCabinet.includes(n)) myCabinet = myCabinet.filter(x=>x!==n); else myCabinet.push(n);
+             localStorage.setItem(`cabinet_0`, JSON.stringify(myCabinet));
+             if(typeof render === 'function') render(db);
+             if(typeof showToast === 'function') showToast("تم التحديث");
+        }
+        
+        // الحفظ في السحابة (لو مسجل)
+        const user = auth.currentUser;
+        if(user && typeof myCabinet !== 'undefined') {
+            setDoc(doc(dbFire, "users", user.uid), { cabinet: myCabinet }, { merge: true });
+        }
+    };
+
+    window.toggleFav = function(n) {
+        if(typeof myFavorites !== 'undefined') {
+             if(myFavorites.includes(n)) myFavorites = myFavorites.filter(x=>x!==n); else myFavorites.push(n);
+             localStorage.setItem(`myFavorites`, JSON.stringify(myFavorites));
+             if(typeof render === 'function') render(db);
+             if(typeof showToast === 'function') showToast("تم التحديث");
+        }
+        
+        const user = auth.currentUser;
+        if(user && typeof myFavorites !== 'undefined') {
+            setDoc(doc(dbFire, "users", user.uid), { favorites: myFavorites }, { merge: true });
+        }
+    };
+
+    // ==========================================
+    // 5. الذكاء الاصطناعي (Gemini AI)
+    // ==========================================
+    window.askAI = async function(drugName) {
+        if(!drugName || drugName.trim().length < 2) { alert("اكتب اسم الدواء!"); return; }
+        
+        // إظهار التحميل (تأكد من وجود العنصر في الـ HTML أو تجاهله لو مش موجود)
+        const loader = document.getElementById('aiLoading');
+        if(loader) loader.style.display = 'block';
+        
+        const prompt = `
+            أنت صيدلي خبير. المستخدم يبحث عن "${drugName}".
+            هات بياناته JSON فقط: 
+            { "n": "الاسم الانجليزي", "p": السعر التقريبي, "c": "التصنيف", "a": "المادة الفعالة", "u": "الاستخدام باختصار", "dose": "الجرعة", "eff": "آثار جانبية", "con": "موانع", "tip": "نصيحة", "preg": "A/B/C/D" }
+            لو معرفتش رجع { "error": true }
+        `;
+
+        try {
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            let text = response.text().replace(/```json/g, '').replace(/```/g, '').trim();
+            const drugData = JSON.parse(text);
+
+            if(drugData.error) {
+                alert("للأسف، لم أتعرف على هذا الدواء.");
+            } else {
+                drugData.u = "✨ (AI) " + drugData.u; // علامة مميزة
+                if(typeof render === 'function') render([drugData]); // عرض النتيجة
+                if(typeof showToast === 'function') showToast("تم الجلب بذكاء Gemini");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("حدث خطأ في الاتصال بالذكاء الاصطناعي.");
+        } finally {
+            if(loader) loader.style.display = 'none';
+        }
+    };
+    
+    // ==========================================
+    // 6. تحميل أدوية إضافية من Firestore (اختياري)
+    // ==========================================
+    async function loadExtraDrugs() {
+        try {
+            const q = await getDocs(collection(dbFire, "drugs"));
+            q.forEach(doc => { 
+                if(typeof db !== 'undefined') db.push(doc.data()); 
+            });
+            console.log("تم تحميل أدوية إضافية من السحابة");
+        } catch(e) { console.log("Offline Mode"); }
     }
-    loadFirebaseDrugs();
+    loadExtraDrugs();
+
 </script>
+
 
 </body>
 </html>
