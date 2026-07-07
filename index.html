@@ -11,23 +11,53 @@
     </script>
 
     <meta charset="UTF-8">
-    <meta name="google-site-verification" content="DmbK0p_mPbXfhJIcsKdt_Yci3rw10nygSDAgA0ki_-A" />
-    <meta name="description" content="موقع شفاء (Shefaa): الدليل الدوائي الشامل. ابحث عن أسعار الأدوية، الإسعافات الأولية، وتتبع صحتك.">
-    <meta name="keywords" content="دليل الأدوية, سعر الدواء, بديل الدواء, شفاء, دكتور خالد شليل, Shefaa, إسعافات أولية, جامعة العلمين الدولية, صيدلة إكلينيكية">
-    <meta name="author" content="Dr. Khaled Shelil">
-    <meta property="og:title" content="Shefaa Pro | دليلك الدوائي الذكي">
-    <meta property="og:image" content="logo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="google-site-verification" content="DmbK0p_mPbXfhJIcsKdt_Yci3rw10nygSDAgA0ki_-A" />
+    
+    <title>Shefaa Pro | دليلك الدوائي الذكي - د. خالد شليل</title>
+    <meta name="description" content="موقع شفاء (Shefaa): الدليل الدوائي الشامل. ابحث عن أسعار الأدوية، الإسعافات الأولية، البدائل، وتتبع صحتك الذكية مع الصيدلي الذكي.">
+    <meta name="keywords" content="دليل الأدوية, سعر الدواء, بديل الدواء, شفاء, دكتور خالد شليل, Shefaa, إسعافات أولية, جامعة العلمين الدولية, صيدلة إكلينيكية, صيدلية ذكية">
+    <meta name="author" content="Dr. Khaled Shelil">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://khaledshelil.github.io/Shefaa/"> <meta property="og:title" content="Shefaa Pro | دليلك الدوائي الذكي">
+    <meta property="og:description" content="ابحث عن أي دواء، اعرف سعره، بدائله، والأعراض الجانبية في ثوانٍ مع شفاء.">
+    <meta property="og:image" content="https://khaledshelil.github.io/Shefaa/logo.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Shefaa Pro | الموسوعة الدوائية">
+    <meta name="twitter:description" content="دليلك الدوائي الذكي للبحث عن الأدوية والبدائل والإسعافات الأولية.">
+    <meta name="twitter:image" content="https://khaledshelil.github.io/Shefaa/logo.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalWebPage",
+      "name": "Shefaa Pro",
+      "description": "دليل دوائي ذكي يوفر معلومات حول الأدوية، الأسعار، البدائل، والإسعافات الأولية.",
+      "author": {
+        "@type": "Person",
+        "name": "Dr. Khaled Shelil"
+      },
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Public"
+      }
+    }
+    </script>
+
     <meta name="theme-color" content="#0d47a1">
     <link rel="manifest" href="manifest.json">
-    <title>Shefaa Pro | د. خالد شليل</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         :root {
@@ -36,14 +66,14 @@
             --shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         /* تنسيق صورة البروفايل الجديدة */
-.header-profile-btn {
-    width: 45px; height: 45px; border-radius: 50%;
-    border: 2px solid white; box-shadow: 0 0 10px rgba(255,255,255,0.5);
-    overflow: hidden; cursor: pointer; transition: 0.3s;
-    background: #ccc; display: flex; align-items: center; justify-content: center;
-}
-.header-profile-btn img { width: 100%; height: 100%; object-fit: cover; }
-.header-profile-btn:hover { transform: scale(1.1); border-color: gold; }
+        .header-profile-btn {
+            width: 45px; height: 45px; border-radius: 50%;
+            border: 2px solid white; box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            overflow: hidden; cursor: pointer; transition: 0.3s;
+            background: #ccc; display: flex; align-items: center; justify-content: center;
+        }
+        .header-profile-btn img { width: 100%; height: 100%; object-fit: cover; }
+        .header-profile-btn:hover { transform: scale(1.1); border-color: gold; }
  
         [data-theme="dark"] {
             --main: #64b5f6; --main-light: #42a5f5; --bg: #121212; --card: #1e1e1e; --text: #e0e0e0;
